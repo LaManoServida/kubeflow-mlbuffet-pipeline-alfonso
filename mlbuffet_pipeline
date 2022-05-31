@@ -1,26 +1,30 @@
 import kfp
 import kfp.components as comp
 import glob
-import pandas as pd
-import tarfile
+import zipfile
+import urllib.request
 import requests
 
 
-def get_csv(url: str, output_csv: str):
-    return 0
+def download_and_unzip(url: str):
+
+    res = requests.get(url)
+
+    with zipfile.ZipFile(file='files.zip', mode='r') as zip_file:
+        zip_file.extractall()
 
 
-def get_train_script():
-    return 0
+def start_training():
+    with open('dataset.csv', 'rb') as dataset, open('train.py', 'rb') as script, open('requirements.txt', 'rb') as requirements:
+
+        response = requests.post('http://192.168.1.112:30313/api/v1/train/lstm/LSTM2FEATURES.pb',
+                                 files={'dataset': dataset.read(), 'requirements': requirements.read(), 'script': script.read()})
+
+        print(response.content)
 
 
-def get_requirements():
-    return 0
+if __name__ == '__main__':
+    download_and_unzip(
+        url='https://github.com/AlfonsoGonz/kubeflow-mlbuffet-pipeline/raw/main/files/files.zip')
 
-
-create_step_merge_csv = kfp.components.create_component_from_func(
-    func=get_csv,
-    # This is optional. It saves the component spec for future use.
-    output_component_file='component.yaml',
-    base_image='python:3.8.1',
-    packages_to_install=[''])
+    start_training()
