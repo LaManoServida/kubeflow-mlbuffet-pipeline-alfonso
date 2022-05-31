@@ -1,0 +1,26 @@
+import kfp
+import kfp.components as comp
+import glob
+import pandas as pd
+import tarfile
+import requests
+
+
+def get_csv(url: str, output_csv: str):
+    return 0
+
+
+def get_train_script():
+    return 0
+
+
+def get_requirements():
+    return 0
+
+
+create_step_merge_csv = kfp.components.create_component_from_func(
+    func=get_csv,
+    # This is optional. It saves the component spec for future use.
+    output_component_file='component.yaml',
+    base_image='python:3.8.1',
+    packages_to_install=[''])
