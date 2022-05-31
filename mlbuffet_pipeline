@@ -10,12 +10,16 @@ def download_and_unzip(url: str):
 
     res = requests.get(url)
 
-    with zipfile.ZipFile(file='files.zip', mode='r') as zip_file:
+    with open('./files.zip', mode='wb') as file:
+
+        file.write(res.content)
+
+    with zipfile.ZipFile(file='./files.zip', mode='r') as zip_file:
         zip_file.extractall()
 
 
 def start_training():
-    with open('dataset.csv', 'rb') as dataset, open('train.py', 'rb') as script, open('requirements.txt', 'rb') as requirements:
+    with open('dataset.csv', 'rb') as dataset, open('./train.py', 'rb') as script, open('requirements.txt', 'rb') as requirements:
 
         response = requests.post('http://192.168.1.112:30313/api/v1/train/lstm/LSTM2FEATURES.pb',
                                  files={'dataset': dataset.read(), 'requirements': requirements.read(), 'script': script.read()})
